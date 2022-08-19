@@ -136,17 +136,8 @@ describe("NFT Cashback", () => {
     await createCashback(ctx, name1, collectionMint, lamports, expirationDate);
 
     const cashback = await ctx.program.account.cashback.fetch(
-      findCashback(ctx, name1)
+      findCashback(ctx, name1, collectionMint)
     );
-    const nftNameArray = [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0,
-    ];
-    const nftNameBuffer = Buffer.from(name1);
-    for (let i = 0; i < nftNameBuffer.length; i++) {
-      nftNameArray[i] = nftNameBuffer[i];
-    }
-    expect(cashback.nftName).to.eql(nftNameArray);
     expect(cashback.lamports.toNumber()).to.eql(lamports);
     expect(cashback.expirationDate).to.eql(expirationDate);
 
@@ -165,11 +156,11 @@ describe("NFT Cashback", () => {
       ctx.user1,
       await findOrCreateATA(ctx, mint1, ctx.user1.publicKey),
       findMetadataPda(mint1),
-      findCashback(ctx, name1)
+      findCashback(ctx, name1, collectionMint)
     );
   });
 
   it("SeizeCashback", async () => {
-    await seizeCashback(ctx, findCashback(ctx, name2));
+    await seizeCashback(ctx, findCashback(ctx, name2, collectionMint));
   });
 });

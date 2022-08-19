@@ -7,9 +7,9 @@ import {
 } from "@solana/web3.js";
 import { Context } from "./ctx";
 
-export function findCashback(ctx: Context, nftName: string): PublicKey {
+export function findCashback(ctx: Context, name: string, collectionMint: PublicKey): PublicKey {
   return PublicKey.findProgramAddressSync(
-    [Buffer.from("cashback"), Buffer.from(nftName)],
+    [Buffer.from("cashback"), Buffer.from(name), collectionMint.toBuffer()],
     ctx.program.programId
   )[0];
 }
@@ -28,17 +28,17 @@ export async function initialize(ctx: Context): Promise<TransactionSignature> {
 
 export async function createCashback(
   ctx: Context,
-  nftName: string,
-  nftCollection: PublicKey,
+  name: string,
+  collectionMint: PublicKey,
   lamports: number | BN,
   expirationDate: number
 ): Promise<TransactionSignature> {
   return await ctx.program.methods
-    .createCashback(nftName, nftCollection, new BN(lamports), expirationDate)
+    .createCashback(name, collectionMint, new BN(lamports), expirationDate)
     .accounts({
       authority: ctx.authority.publicKey,
       bank: ctx.bank,
-      cashback: findCashback(ctx, nftName),
+      cashback: findCashback(ctx, name, collectionMint),
       systemProgram: SystemProgram.programId,
     })
     .signers([ctx.authority])

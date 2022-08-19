@@ -9,8 +9,6 @@ pub struct Bank {
 #[account(zero_copy)]
 #[repr(packed)]
 pub struct Cashback {
-    pub nft_name: [u8; 32],
-    pub nft_collection: Pubkey,
     pub lamports: u64,
     pub expiration_date: u32,
 }

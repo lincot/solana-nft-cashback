@@ -15,15 +15,16 @@ pub struct ClaimCashback<'info> {
         seeds = [b"metadata", &mpl_token_metadata::ID.to_bytes(), &nft_account.mint.to_bytes()],
         seeds::program = mpl_token_metadata::ID,
         bump,
-        constraint = metadata.collection
-            == Some(Collection { verified: true, key: cashback.load()?.nft_collection }),
+        constraint = matches!(metadata.collection, Some(Collection { verified: true, .. })),
     )]
     metadata: Account<'info, Metadata>,
     #[account(
         mut,
         seeds = [
             b"cashback",
-            &metadata.data.name.as_bytes()[..metadata.data.name.bytes().position(|b| b == 0).unwrap_or(32)]],
+            &metadata.data.name.as_bytes()[..metadata.data.name.bytes().position(|b| b == 0).unwrap_or(32)],
+            &metadata.collection.as_ref().unwrap().key.to_bytes(),
+        ],
         bump,
         constraint = (Clock::get()?.unix_timestamp as u32) < cashback.load()?.expiration_date,
     )]
