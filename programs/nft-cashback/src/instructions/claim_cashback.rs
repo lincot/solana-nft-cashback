@@ -7,6 +7,8 @@ use mpl_token_metadata::state::Collection;
 pub struct ClaimCashback<'info> {
     #[account(mut)]
     user: Signer<'info>,
+    #[account(mut, address = bank.load()?.authority)]
+    authority: UncheckedAccount<'info>,
     #[account(mut, seeds = [b"bank"], bump)]
     bank: AccountLoader<'info, Bank>,
     #[account(token::authority = user, constraint = nft_account.amount != 0)]
@@ -27,6 +29,7 @@ pub struct ClaimCashback<'info> {
         ],
         bump,
         constraint = (Clock::get()?.unix_timestamp as u32) < cashback.load()?.expiration_date,
+        close = authority,
     )]
     cashback: AccountLoader<'info, Cashback>,
     system_program: Program<'info, System>,

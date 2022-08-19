@@ -7,7 +7,11 @@ import {
 } from "@solana/web3.js";
 import { Context } from "./ctx";
 
-export function findCashback(ctx: Context, name: string, collectionMint: PublicKey): PublicKey {
+export function findCashback(
+  ctx: Context,
+  name: string,
+  collectionMint: PublicKey
+): PublicKey {
   return PublicKey.findProgramAddressSync(
     [Buffer.from("cashback"), Buffer.from(name), collectionMint.toBuffer()],
     ctx.program.programId
@@ -56,6 +60,7 @@ export async function claimCashback(
     .claimCashback()
     .accounts({
       user: user.publicKey,
+      authority: ctx.authority.publicKey,
       bank: ctx.bank,
       nftAccount,
       metadata,

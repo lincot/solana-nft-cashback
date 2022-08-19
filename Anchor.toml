@@ -1,3 +1,6 @@
+[features]
+skip-lint = true
+
 [programs.localnet]
 nft_cashback = "5CZ3DsaaByC6zST9pz6Dqzv6NpUvdCn3PE9reFa6iYpF"
 
