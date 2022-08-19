@@ -9,7 +9,7 @@ pub struct ClaimCashback<'info> {
     user: Signer<'info>,
     #[account(mut, seeds = [b"bank"], bump)]
     bank: AccountLoader<'info, Bank>,
-    #[account(constraint = nft_account.amount != 0)]
+    #[account(token::authority = user, constraint = nft_account.amount != 0)]
     nft_account: Account<'info, TokenAccount>,
     #[account(
         seeds = [b"metadata", &mpl_token_metadata::ID.to_bytes(), &nft_account.mint.to_bytes()],
